@@ -4,7 +4,17 @@ import Budget from "../models/Budget";
 export class BudgetController {
 
     public static getAll = async (req: Request, res: Response) => {
-        console.log('desde /api/budgets');
+        
+        try {
+            const budgets = await Budget.findAll({
+                order: ['createdAt', 'DESC'],
+                // TODO: Filtrar por usuario autenticado
+            });
+            console.log('desde /api/budgets');
+            res.json(budgets);
+        } catch (error) {
+            res.status(500).json({error: 'There was a mistake'});
+        }
     }
 
     public static create = async (req: Request, res: Response) => {
