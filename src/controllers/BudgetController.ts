@@ -10,7 +10,7 @@ export class BudgetController {
                 order: ['createdAt', 'DESC'],
                 // TODO: Filtrar por usuario autenticado
             });
-            console.log('desde /api/budgets');
+            
             res.json(budgets);
         } catch (error) {
             res.status(500).json({error: 'There was a mistake'});
