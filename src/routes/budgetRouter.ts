@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { BudgetController } from "../controllers/BudgetController";
 import { handleInputErrors } from "../middlewares/validation";
 
@@ -17,7 +17,12 @@ router.post('/',
     handleInputErrors,
     BudgetController.create);
 
-router.get('/:id', BudgetController.getById);
+router.get('/:id', 
+    param('id').isInt().withMessage('Invalid ID')
+    .custom(value => value > 0).withMessage('Invalid ID'),
+    handleInputErrors,
+    BudgetController.getById);
+
 router.put('/:id', BudgetController.updateById);
 router.delete('/:id', BudgetController.deleteById);
 

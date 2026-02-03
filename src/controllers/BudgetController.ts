@@ -31,7 +31,19 @@ export class BudgetController {
     }
 
     public static getById = async (req: Request, res: Response) => {
-        console.log('desde /api/budgets/:id');
+        try {
+            const { id } = req.params
+            const budgetById = await Budget.findOne({where: {id}});
+            
+            if(!budgetById){
+                const error = new Error('Budget not found');
+                return res.status(404).json({error: error.message});
+            }
+
+            res.json(budgetById);
+        } catch (error) {
+            res.status(500).json({error: 'There was a mistake'});
+        }
     }
 
     public static updateById = async (req: Request, res: Response) => {
