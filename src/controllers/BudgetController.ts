@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Budget from "../models/Budget";
 
 export class BudgetController {
 
@@ -7,7 +8,16 @@ export class BudgetController {
     }
 
     public static create = async (req: Request, res: Response) => {
-        console.log('POST desde /api/budgets');
+        try {
+
+            const budget = new Budget(req.body);
+            
+            await budget.save();
+            res.status(201).json('Budget Created Correctly');
+        } catch (error) {
+            res.status(500).json({error: 'There was a mistake'});
+        }
+
     }
 
     public static getById = async (req: Request, res: Response) => {
