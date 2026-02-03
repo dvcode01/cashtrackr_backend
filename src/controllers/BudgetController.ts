@@ -7,7 +7,9 @@ export class BudgetController {
         
         try {
             const budgets = await Budget.findAll({
-                order: ['createdAt', 'DESC'],
+                order: [
+                    ['createdAt', 'DESC']
+                ],
                 // TODO: Filtrar por usuario autenticado
             });
             
