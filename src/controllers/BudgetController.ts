@@ -67,6 +67,20 @@ export class BudgetController {
     }
 
     public static deleteById = async (req: Request, res: Response) => {
-        console.log('DELETE desde /api/budgets/:id');
+        
+        try {
+            const { id } = req.params;
+             const budget = await Budget.findOne({where: {id}});
+            
+            if(!budget){
+                const error = new Error('Budget not found');
+                return res.status(404).json({error: error.message});
+            }
+            
+            await budget.destroy();
+            res.json('Budget successfully removed');
+        } catch (error) {
+            res.status(500).json({error: 'There was a mistake'});
+        }
     }
 }

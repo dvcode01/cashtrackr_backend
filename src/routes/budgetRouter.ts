@@ -37,7 +37,11 @@ router.put('/:id',
     BudgetController.updateById);
 
 
-router.delete('/:id', BudgetController.deleteById);
+router.delete('/:id',
+    param('id').isInt().withMessage('Invalid ID')
+        .custom(value => value > 0).withMessage('Invalid ID'), 
+    handleInputErrors,
+    BudgetController.deleteById);
 
 
 export default router;
