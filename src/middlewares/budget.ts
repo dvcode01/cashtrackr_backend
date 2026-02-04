@@ -1,7 +1,16 @@
 import type { Request, Response, NextFunction } from 'express';
 import { param, validationResult } from 'express-validator';
+import Budget from '../models/Budget';
 
-const validateBudgetById = async (req: Request, res: Response, next: NextFunction) => {
+declare global {
+    namespace Express {
+        interface Request {
+            budget?: Budget
+        }
+    }
+}
+
+export const validateBudgetById = async (req: Request, res: Response, next: NextFunction) => {
 
     await param('id')
             .isInt().withMessage('Invalid ID')
@@ -16,4 +25,20 @@ const validateBudgetById = async (req: Request, res: Response, next: NextFunctio
     next();
 };
 
-export default validateBudgetById;
+export const validateBudgetExist = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+        const { id } = req.params
+        const budget = await Budget.findOne({where: {id}});
+        
+        if(!budget){
+            const error = new Error('Budget not found');
+            return res.status(404).json({error: error.message});
+        }
+
+        req.budget = budget;
+        next();
+    } catch (error) {
+        res.status(500).json({error: 'There was a mistake'});
+    }
+};
