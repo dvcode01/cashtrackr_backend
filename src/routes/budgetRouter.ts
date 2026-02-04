@@ -6,6 +6,9 @@ import { validateBudgetById, validateBudgetExist  } from "../middlewares/budget"
 
 const router = Router();
 
+router.param('budgetID', validateBudgetById);
+router.param('budgetID', validateBudgetExist);
+
 router.get('/', BudgetController.getAll);
 
 router.post('/', 
@@ -18,14 +21,9 @@ router.post('/',
     handleInputErrors,
     BudgetController.create);
 
-router.get('/:id', 
-    validateBudgetById,
-    validateBudgetExist,
-    BudgetController.getById);
+router.get('/budgetID', BudgetController.getById);
 
-router.put('/:id', 
-    validateBudgetById,
-    validateBudgetExist,
+router.put('/budgetID', 
     body('name')
         .notEmpty().withMessage('The budget name cannot be empty'),
     body('amount')
@@ -35,11 +33,7 @@ router.put('/:id',
     handleInputErrors,
     BudgetController.updateById);
 
-
-router.delete('/:id',
-    validateBudgetById, 
-    validateBudgetExist,
-    BudgetController.deleteById);
+router.delete('/budgetID', BudgetController.deleteById);
 
 
 export default router;
