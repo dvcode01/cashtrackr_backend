@@ -15,14 +15,14 @@ router.post('/',
     handleInputErrors,
     BudgetController.create);
 
-router.get('/budgetID', BudgetController.getById);
+router.get('/:budgetID', BudgetController.getById);
 
-router.put('/budgetID', 
+router.put('/:budgetID', 
     validateBudgetInput,
     handleInputErrors,
     BudgetController.updateById);
 
-router.delete('/budgetID', BudgetController.deleteById);
+router.delete('/:budgetID', BudgetController.deleteById);
 
 
 export default router;
