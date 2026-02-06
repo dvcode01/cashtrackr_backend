@@ -38,7 +38,12 @@ router.post('/:budgetID/expenses',
     ExpensesController.create);
 
 router.get('/:budgetID/expenses/:expenseID', ExpensesController.getById);
-router.put('/:budgetID/expenses/:expenseID', ExpensesController.updateById);
+
+router.put('/:budgetID/expenses/:expenseID', 
+    validateExpenseInput,
+    handleInputErrors,
+    ExpensesController.updateById);
+
 router.delete('/:budgetID/expenses/:expenseID', ExpensesController.deleteById);
 
 

@@ -23,10 +23,12 @@ export class ExpensesController {
     }
 
     public static updateById = async (req: Request, res: Response) => {
- 
+        await req.expense.update(req.body);
+        res.json('Expense updated correctly');
     }
   
     public static deleteById = async (req: Request, res: Response) => {
-
+        await req.expense.destroy();
+        res.json('Expense successfully removed');
     }
 }
