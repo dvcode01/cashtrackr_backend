@@ -2,9 +2,6 @@ import type { Request, Response } from 'express';
 import Expense from '../models/Expense';
 
 export class ExpensesController {
-    public static getAll = async (req: Request, res: Response) => {
-    
-    }
   
     public static create = async (req: Request, res: Response) => {
         try {
