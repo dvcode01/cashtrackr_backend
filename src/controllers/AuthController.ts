@@ -56,12 +56,12 @@ export class AuthController {
 
         if(!user){
             const error = new Error('User not found');
-            return res.status(409).json({error: error.message});
+            return res.status(404).json({error: error.message});
         }
 
         if(!user.confirmed){
             const error = new Error('User not confirmed');
-            return res.status(401).json({error: error.message});
+            return res.status(403).json({error: error.message});
         }
 
         res.json(user);
