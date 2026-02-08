@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "../models/User";
-import { hashPassword } from '../utils/auth';
+import { checkPassword, hashPassword } from '../utils/auth';
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmail";
 
@@ -62,6 +62,13 @@ export class AuthController {
         if(!user.confirmed){
             const error = new Error('User not confirmed');
             return res.status(403).json({error: error.message});
+        }
+
+        const isPasswordCorrect = checkPassword(password, user.password);
+        
+        if(!isPasswordCorrect){
+            const error = new Error('Incorrect password');
+            return res.status(401).json({error: error.message});
         }
 
         res.json(user);
