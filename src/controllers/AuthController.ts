@@ -49,4 +49,8 @@ export class AuthController {
         await user.save();
         res.json('Account successfully confirmed');
     };
+
+    public static login = async (req: Request, res: Response) => {
+        res.json(req.body);
+    };
 }
