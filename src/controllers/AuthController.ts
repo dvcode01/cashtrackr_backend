@@ -33,4 +33,20 @@ export class AuthController {
             res.status(500).json({error: 'There was a mistake'});
         }
     };
+
+    public static confirmAccount = async(req: Request, res: Response) => {
+        const { token } = req.body;
+        const user = await User.findOne({ where: {token} });
+
+        if(!user){
+            const error = new Error('Invalid token');
+            res.status(409).json({error: error.message});
+        }
+
+        user.token = null;
+        user.confirmed = true;
+
+        await user.save();
+        res.json('Account successfully confirmed');
+    };
 }

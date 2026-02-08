@@ -16,5 +16,7 @@ router.post('/create-account',
     handleInputErrors,
     AuthController.createAccount);
 
+router.post('/confirm-account', AuthController.confirmAccount);
+
 
 export default router;
