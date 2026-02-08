@@ -5,6 +5,7 @@ import { handleInputErrors } from '../middlewares/validation';
 import { limiter } from '../config/limiter';
 
 const router = Router();
+router.use(limiter);
 
 router.post('/create-account', 
     body('name')
@@ -18,7 +19,6 @@ router.post('/create-account',
     AuthController.createAccount);
 
 router.post('/confirm-account', 
-    limiter,
     body('token')
         .notEmpty().isLength({min: 6, max: 6}).withMessage('Invalid token'),
     handleInputErrors,
