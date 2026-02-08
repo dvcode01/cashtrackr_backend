@@ -51,6 +51,19 @@ export class AuthController {
     };
 
     public static login = async (req: Request, res: Response) => {
-        res.json(req.body);
+        const { email, password } = req.body;
+        const user = await User.findOne({ where: {email} });
+
+        if(!user){
+            const error = new Error('User not found');
+            return res.status(409).json({error: error.message});
+        }
+
+        if(!user.confirmed){
+            const error = new Error('User not confirmed');
+            return res.status(401).json({error: error.message});
+        }
+
+        res.json(user);
     };
 }
