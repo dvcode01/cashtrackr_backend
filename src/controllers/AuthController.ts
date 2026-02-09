@@ -75,4 +75,8 @@ export class AuthController {
         const token = generateJWT(user.id);
         res.json(token);
     };
+
+    public static forgotPassword = (req: Request, res: Response) => {
+        res.json('desde forgotpassword');
+    }
 }
