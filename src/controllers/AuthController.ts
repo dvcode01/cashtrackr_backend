@@ -96,4 +96,16 @@ export class AuthController {
 
         res.json('Check your email for instructions');
     }
+
+    public static validateToken = async (req: Request, res: Response) => {
+        const { token  } = req.body;
+        const tokenExist = await User.findOne({ where: {token} });
+
+        if(!tokenExist){
+            const error = new Error('Invalid token');
+            return res.status(404).json({error: error.message});
+        }
+
+        res.json('Valid Token... ');
+    };
 }

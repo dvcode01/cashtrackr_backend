@@ -38,4 +38,11 @@ router.post('/forgot-password',
     handleInputErrors,
     AuthController.forgotPassword);
 
+router.post('/validate-token',  
+    body('token')
+        .notEmpty().isLength({min: 6, max: 6}).withMessage('Invalid token'),
+    handleInputErrors,
+    AuthController.validateToken
+);
+
 export default router;
