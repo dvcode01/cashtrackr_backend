@@ -124,5 +124,9 @@ export class AuthController {
         
         await user.save();
         res.json('The password was changed successfully');
-    }
+    };
+
+    public static user = async (req: Request, res: Response) => {
+        res.json('Desde user');
+    };
 }
