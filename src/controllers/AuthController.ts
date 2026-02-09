@@ -76,7 +76,24 @@ export class AuthController {
         res.json(token);
     };
 
-    public static forgotPassword = (req: Request, res: Response) => {
-        res.json('desde forgotpassword');
+    public static forgotPassword = async (req: Request, res: Response) => {
+        const { email } = req.body;
+        const user = await User.findOne({ where: {email} });
+
+        if(!user){
+            const error = new Error('User not found');
+            return res.status(404).json({error: error.message});
+        }
+
+        user.token = generateToken();
+        await user.save();
+
+        await AuthEmail.sendConfirmationEmail({
+            email: user.email,
+            name: user.name,
+            token: user.token
+        });
+
+        res.json('Check your email for instructions');
     }
 }
