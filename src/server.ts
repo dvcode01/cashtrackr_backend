@@ -23,6 +23,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.use('/api/budgets', budgetRouter);
-app.use('/api/users', authRouter);
+app.use('/api/auth', authRouter);
 
 export default app
