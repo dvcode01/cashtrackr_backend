@@ -1,4 +1,4 @@
-import { sign} from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 
 export const generateJWT = (id: string) => {
     const token = sign({id}, process.env.SECRET_JWT, {
@@ -6,4 +6,8 @@ export const generateJWT = (id: string) => {
     });
     
     return token;
+}
+
+export const checkJWT = (token: string) => {
+    return verify(token, process.env.SECRET_JWT);
 }
