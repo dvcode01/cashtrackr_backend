@@ -3,6 +3,7 @@ import { body, param } from 'express-validator';
 import { AuthController } from '../controllers/AuthController';
 import { handleInputErrors } from '../middlewares/validation';
 import { limiter } from '../config/limiter';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
 router.use(limiter);
@@ -56,6 +57,8 @@ router.post('/reset-password/:token',
     AuthController.resetPasswordWithToken
 );
 
-router.get('/user', AuthController.user);
+router.get('/user', 
+    authenticate,
+    AuthController.user);
 
 export default router;

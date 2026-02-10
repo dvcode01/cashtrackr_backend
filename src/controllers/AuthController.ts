@@ -3,7 +3,7 @@ import User from "../models/User";
 import { checkPassword, hashPassword } from '../utils/auth';
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmail";
-import { generateJWT, checkJWT } from "../utils/jwt";
+import { generateJWT } from "../utils/jwt";
 
 export class AuthController {
     public static createAccount = async (req: Request, res: Response) => {
@@ -127,33 +127,6 @@ export class AuthController {
     };
 
     public static user = async (req: Request, res: Response) => {
-        const bearer = req.headers.authorization; 
-
-        if(!bearer){
-            const error = new Error('Unauthorized');
-            return res.status(401).json({error: error.message});
-        }
-
-        const [, token]  = bearer.split(' ');
-
-        if(!token){
-            const error = new Error('Invalid Token');
-            return res.status(401).json({error: error.message});
-        }
-
-        try {
-            const decoded = checkJWT(token);
-            
-            if(typeof decoded === 'object' && decoded.id){
-                const user = await User.findByPk(decoded.id, {
-                    attributes: ['id', 'name', 'email']
-                });
-
-                res.json(user);
-            }
-
-        } catch (error) {
-            res.status(500).json({error: 'There was a mistake in token'});
-        }
+        res.json(req.user);
     };
 }
