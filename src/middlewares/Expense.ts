@@ -40,7 +40,9 @@ export const validateExpenseExist = async (req: Request, res: Response, next: Ne
 
     try {
         const { expenseID } = req.params
-        const expense = await Expense.findOne({where: {id: expenseID}});
+        if(typeof expenseID !== 'string') return;
+
+        const expense = await Expense.findByPk(expenseID);
         
         if(!expense){
             const error = new Error('Expense not found');

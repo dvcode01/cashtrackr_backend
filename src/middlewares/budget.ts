@@ -29,7 +29,9 @@ export const validateBudgetExist = async (req: Request, res: Response, next: Nex
 
     try {
         const { budgetID } = req.params
-        const budget = await Budget.findOne({where: {id: budgetID}});
+        if(typeof budgetID !== 'string') return;
+
+        const budget = await Budget.findByPk(budgetID);
         
         if(!budget){
             const error = new Error('Budget not found');
