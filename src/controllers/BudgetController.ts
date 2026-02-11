@@ -12,6 +12,7 @@ export class BudgetController {
                     ['createdAt', 'DESC']
                 ],
                 // TODO: Filtrar por usuario autenticado
+
             });
             
             res.json(budgets);
@@ -22,9 +23,9 @@ export class BudgetController {
 
     public static create = async (req: Request, res: Response) => {
         try {
-
             const budget = new Budget(req.body);
-            
+            budget.user_id = req.user.id;
+
             await budget.save();
             res.status(201).json('Budget Created Correctly');
         } catch (error) {
