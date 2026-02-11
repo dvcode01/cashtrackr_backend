@@ -66,7 +66,7 @@ router.post('/update-password',
     body('current_password')
         .notEmpty().withMessage('The password is required'),
     body('password')
-        .isLength({ min: 8 }).withMessage('The password is very short, it must have minimum of 8 characters'),
+        .isLength({ min: 8 }).withMessage('The new password is very short, it must have minimum of 8 characters'),
     handleInputErrors,
     AuthController.updateCurrentPassword
 );
