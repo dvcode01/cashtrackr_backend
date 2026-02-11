@@ -129,4 +129,9 @@ export class AuthController {
     public static user = async (req: Request, res: Response) => {
         res.json(req.user);
     };
+
+    public static updateCurrentPassword = async (req: Request, res: Response) => {
+        const { current_password, password } = req.body;
+        res.json('Desde update');
+    }
 }

@@ -61,4 +61,14 @@ router.get('/user',
     authenticate,
     AuthController.user);
 
+router.post('/update-password',
+    authenticate,
+    body('current_password')
+        .notEmpty().withMessage('The password is required'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('The password is very short, it must have minimum of 8 characters'),
+    handleInputErrors,
+    AuthController.updateCurrentPassword
+);
+
 export default router;
