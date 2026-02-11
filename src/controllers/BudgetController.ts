@@ -11,7 +11,6 @@ export class BudgetController {
                 order: [
                     ['createdAt', 'DESC']
                 ],
-                // TODO: Filtrar por usuario autenticado
                 where: {
                     user_id: req.user.id
                 }
