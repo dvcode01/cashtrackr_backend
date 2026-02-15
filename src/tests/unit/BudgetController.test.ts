@@ -83,55 +83,57 @@ describe('Get all budgets', () => {
         expect(res._getJSONData()).toEqual({error: 'There was a mistake'});
     });
 
-    describe('Creating budgets', () => {
-        it('Should create a new Budget and respond with statusCode 201', async () => {
-            const mockBudget = {
-                save: jest.fn().mockResolvedValue(true)
-            };
-            (Budget.create as jest.Mock).mockResolvedValue(mockBudget);
-            
-            const req = createRequest({
-                method: 'POST',
-                url: '/api/budgets',
-                user: {id: 2},
-                body: { name: 'Presupuesto prueba', amount: 120}
-            });
+    
+});
 
-            const res = createResponse();
-            await BudgetController.create(req, res);
-
-            const data = res._getJSONData();
-            expect(res.statusCode).toBe(201);
-
-            expect(data).toBe('Budget Created Correctly');
-            expect(mockBudget.save).toHaveBeenCalled();
-
-            expect(mockBudget.save).toHaveBeenCalledTimes(1);
-            expect(Budget.create).toHaveBeenCalledWith(req.body);
+describe('Creating budgets', () => {
+    it('Should create a new Budget and respond with statusCode 201', async () => {
+        const mockBudget = {
+            save: jest.fn().mockResolvedValue(true)
+        };
+        (Budget.create as jest.Mock).mockResolvedValue(mockBudget);
+        
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/budgets',
+            user: {id: 2},
+            body: { name: 'Presupuesto prueba', amount: 120}
         });
 
-        it('Should handle budget creation error', async () => {
-            const mockBudget = {
-                save: jest.fn()
-            };
-            (Budget.create as jest.Mock).mockRejectedValue(new Error);
-            
-            const req = createRequest({
-                method: 'POST',
-                url: '/api/budgets',
-                user: {id: 2},
-                body: { name: '', amount: 120}
-            });
+        const res = createResponse();
+        await BudgetController.create(req, res);
 
-            const res = createResponse();
-            await BudgetController.create(req, res);
+        const data = res._getJSONData();
+        expect(res.statusCode).toBe(201);
 
-            const data = res._getJSONData();
-            expect(res.statusCode).toBe(500);
+        expect(data).toBe('Budget Created Correctly');
+        expect(mockBudget.save).toHaveBeenCalled();
 
-            expect(data).toEqual({error: 'There was a mistake'});
-            expect(mockBudget.save).not.toHaveBeenCalled();
-            expect(Budget.create).toHaveBeenCalledWith(req.body);
+        expect(mockBudget.save).toHaveBeenCalledTimes(1);
+        expect(Budget.create).toHaveBeenCalledWith(req.body);
+    });
+
+    it('Should handle budget creation error', async () => {
+        const mockBudget = {
+            save: jest.fn()
+        };
+        (Budget.create as jest.Mock).mockRejectedValue(new Error);
+        
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/budgets',
+            user: {id: 2},
+            body: { name: '', amount: 120}
         });
+
+        const res = createResponse();
+        await BudgetController.create(req, res);
+
+        const data = res._getJSONData();
+        expect(res.statusCode).toBe(500);
+
+        expect(data).toEqual({error: 'There was a mistake'});
+        expect(mockBudget.save).not.toHaveBeenCalled();
+        expect(Budget.create).toHaveBeenCalledWith(req.body);
     });
 });
