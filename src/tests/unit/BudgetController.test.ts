@@ -66,4 +66,19 @@ describe('Get all budgets', () => {
         expect(res.statusCode).toBe(200);
         expect(res.status).not.toBe(404);
     });
+
+    it('Should handle errors when fetching budgets', async () => {
+        const req = createRequest({
+            method: 'GET',
+            url: '/api/budgets',
+            user: {id: 100}
+        });
+
+        const res = createResponse();
+        (Budget.findAll as jest.Mock).mockRejectedValue(new Error);
+        await BudgetController.getAll(req, res);
+
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({error: 'There was a mistake'});
+    });
 });
