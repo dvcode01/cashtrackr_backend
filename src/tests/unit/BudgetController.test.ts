@@ -227,3 +227,28 @@ describe('Update budget according to ID', () => {
         expect(mockBudget.update).toHaveBeenCalledWith(req.body);
     });
 });
+
+describe('Budget removal based on your ID', () => {
+    it('Should delete budget and return success message', async () => {
+        const mockBudget = {
+            destroy: jest.fn().mockResolvedValue(true)
+        };
+        
+        const req = createRequest({
+            method: 'DELETE',
+            url: '/api/budgets/:budgetID',
+            budget: mockBudget,
+        });
+
+        const res = createResponse();
+        await BudgetController.deleteById(req, res);
+
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(200);
+        expect(data).toEqual('Budget successfully removed');
+
+        expect(mockBudget.destroy).toHaveBeenCalled();
+        expect(mockBudget.destroy).toHaveBeenCalledTimes(1);
+    });
+});
