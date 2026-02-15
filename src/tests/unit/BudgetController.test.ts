@@ -142,7 +142,7 @@ describe('Creating budgets', () => {
 
 describe('Get a budget using your ID', () => {
     beforeEach(() => {
-        (Budget.findByPk as jest.Mock).mockImplementation((id, include) => {
+        (Budget.findByPk as jest.Mock).mockImplementation((id) => {
             const budgetByID = budgets.filter(bud => bud.id === id)[0];
             return Promise.resolve(budgetByID);
         }); 
@@ -151,7 +151,7 @@ describe('Get a budget using your ID', () => {
     it('Should return a budget with ID 1 and 3 expenses', async () => {
         const req = createRequest({
             method: 'GET',
-            url: '/api/budgets/:id',
+            url: '/api/budgets/:budgetID',
             budget: { id: 1 }
         });
 
@@ -198,5 +198,32 @@ describe('Get a budget using your ID', () => {
 
         expect(res.statusCode).toBe(200);
         expect(data.expenses).toHaveLength(0);
+    });
+});
+
+describe('Update budget according to ID', () => {
+    it('Should update budget and return success message', async () => {
+        const mockBudget = {
+            update: jest.fn().mockResolvedValue(true)
+        };
+        
+        const req = createRequest({
+            method: 'PUT',
+            url: '/api/budgets/:budgetID',
+            budget: mockBudget,
+            body: {name: 'Presupuesto actualizado', amount: 400}
+        });
+
+        const res = createResponse();
+        await BudgetController.updateById(req, res);
+
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(200);
+        expect(data).toEqual('Budget updated correctly');
+
+        expect(mockBudget.update).toHaveBeenCalled();
+        expect(mockBudget.update).toHaveBeenCalledTimes(1);
+        expect(mockBudget.update).toHaveBeenCalledWith(req.body);
     });
 });
