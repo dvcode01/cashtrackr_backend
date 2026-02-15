@@ -110,6 +110,28 @@ describe('Get all budgets', () => {
             expect(Budget.create).toHaveBeenCalledWith(req.body);
         });
 
+        it('Should handle budget creation error', async () => {
+            const mockBudget = {
+                save: jest.fn()
+            };
+            (Budget.create as jest.Mock).mockRejectedValue(new Error);
+            
+            const req = createRequest({
+                method: 'POST',
+                url: '/api/budgets',
+                user: {id: 2},
+                body: { name: '', amount: 120}
+            });
 
+            const res = createResponse();
+            await BudgetController.create(req, res);
+
+            const data = res._getJSONData();
+            expect(res.statusCode).toBe(500);
+
+            expect(data).toEqual({error: 'There was a mistake'});
+            expect(mockBudget.save).not.toHaveBeenCalled();
+            expect(Budget.create).toHaveBeenCalledWith(req.body);
+        });
     });
 });
