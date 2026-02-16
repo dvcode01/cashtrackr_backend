@@ -84,6 +84,23 @@ describe('Verify access to budget', () => {
         expect(next).toHaveBeenCalled();
         expect(next).toHaveBeenCalledTimes(1);
     });
+
+    it('Should return 401 error if user does not have access to budget', async() => {
+        const req = createRequest({
+            budget: budgets[0],
+            user: {id: 2}
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await hasAccess(req, res, next);
+        const data = res._getJSONData();
+
+        expect(next).not.toHaveBeenCalled();
+        expect(res.statusCode).toBe(401);
+        expect(data).toEqual({error: 'Invalid action'});
+    });
 });
 
 
