@@ -1,5 +1,5 @@
 import { createRequest, createResponse } from 'node-mocks-http';
-import { validateBudgetExist } from '../../../middlewares/budget';
+import { hasAccess, validateBudgetExist } from '../../../middlewares/budget';
 import Budget from '../../../models/Budget';
 import { budgets } from '../../mocks/budget';
 
@@ -69,6 +69,22 @@ describe('Validation of budget existence', () => {
     });
 });
 
+describe('Verify access to budget', () => {
+    it('Should call next function if user has access', async() => {
+        const req = createRequest({
+            budget: budgets[0],
+            user: {id: 1}
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await hasAccess(req, res, next);
+
+        expect(next).toHaveBeenCalled();
+        expect(next).toHaveBeenCalledTimes(1);
+    });
+});
 
 
 
