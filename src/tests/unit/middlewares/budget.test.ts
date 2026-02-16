@@ -29,7 +29,44 @@ describe('Validation of budget existence', () => {
         expect(next).not.toHaveBeenCalled();
     });
 
-    
+    it('Should handle errors budget', async () => {
+        (Budget.findByPk as jest.Mock).mockRejectedValue(new Error);
+        
+        const req = createRequest({
+            params: {
+                budgetID: '1'
+            }
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await validateBudgetExist(req, res, next);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(500);
+        expect(data).toEqual({error: 'There was a mistake'});
+        
+        expect(next).not.toHaveBeenCalled();
+    });
+
+    it('Should procedd to next middleware if budget exists', async () => {
+        (Budget.findByPk as jest.Mock).mockResolvedValue(budgets[0]);
+        
+        const req = createRequest({
+            params: {
+                budgetID: '1'
+            }
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await validateBudgetExist(req, res, next);
+
+        expect(next).toHaveBeenCalled();
+        expect(req.budget).toEqual(budgets[0]);
+    });
 });
 
 
