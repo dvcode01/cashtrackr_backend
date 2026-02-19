@@ -32,4 +32,19 @@ describe('Validates the existence of the expense', () => {
         expect(Expense.findByPk).toHaveBeenCalled();
         expect(Expense.findByPk).toHaveBeenCalledTimes(1);
     });
+
+    it('Should call next middleware if expense exists', async () => {
+        const req = createRequest({
+            params: { expenseID: '1' },
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await validateExpenseExist(req, res, next);
+        
+        expect(next).toHaveBeenCalled();
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(req.expense).toEqual(expenses[0])
+    });
 });
