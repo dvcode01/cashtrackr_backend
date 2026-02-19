@@ -80,3 +80,30 @@ describe('Get expense by ID', () => {
     });
 
 });
+
+describe('Update expense by ID', () => {
+    it('Should handle expense update', async () => {
+        const expenseMock = {
+            ...expenses[0],
+            update: jest.fn().mockResolvedValue(true)
+        };
+
+        const req = createRequest({
+            method: 'PUT',
+            url: '/api/:budgetID/expenses/:expenseID',
+            expense: expenseMock,
+            body: {name: 'Gasto actualizado', amount: 230}
+        });
+
+        const res = createResponse();
+        await ExpensesController.updateById(req, res);
+        
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(200);
+        expect(data).toEqual('Expense updated correctly');
+
+        expect(expenseMock.update).toHaveBeenCalled();
+        expect(expenseMock.update).toHaveBeenCalledWith(req.body);
+    });
+});
