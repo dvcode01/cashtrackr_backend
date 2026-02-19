@@ -47,4 +47,24 @@ describe('Validates the existence of the expense', () => {
         expect(next).toHaveBeenCalledTimes(1);
         expect(req.expense).toEqual(expenses[0])
     });
+
+    it('Should handle internal server error', async () => {
+        (Expense.findByPk as jest.Mock).mockRejectedValue(new Error);
+        
+        const req = createRequest({
+            params: { expenseID: '1' },
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        await validateExpenseExist(req, res, next);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(500);
+        expect(data).toEqual({error: 'There was a mistake'});
+    
+        expect(next).not.toHaveBeenCalled();
+        expect(next).toHaveBeenCalledTimes(0);
+    });
 });
