@@ -1,6 +1,7 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 import Expense from '../../../models/Expense';
 import { ExpensesController } from '../../../controllers/ExpenseController';
+import { expenses } from '../../mocks/expense';
 
 jest.mock('../../../models/Expense', () => ({
     create: jest.fn()
@@ -59,4 +60,23 @@ describe('Creating expense', () => {
         expect(expenseMock.save).not.toHaveBeenCalled();
         expect(expenseMock.save).toHaveBeenCalledTimes(0);
     });
+});
+
+describe('Get expense by ID', () => {
+    it('Should return expense with ID 1', async () => {
+        const req = createRequest({
+            method: 'GET',
+            url: '/api/budgets/:budgetID/expenses/:expenseID',
+            expense: expenses[0]
+        });
+
+        const res = createResponse();
+        await ExpensesController.getById(req, res);
+
+        const data = res._getJSONData();
+        
+        expect(res.statusCode).toBe(200);
+        expect(data).toEqual(expenses[0]);
+    });
+
 });
