@@ -2,6 +2,8 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import Expense from '../../../models/Expense';
 import { validateExpenseExist } from '../../../middlewares/Expense';
 import { expenses } from '../../mocks/expense';
+import { budgets } from '../../mocks/budget';
+import { hasAccess } from '../../../middlewares/budget';
 
 jest.mock('../../../models/Expense', () => ({
     findByPk: jest.fn()
@@ -66,5 +68,27 @@ describe('Validates the existence of the expense', () => {
     
         expect(next).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalledTimes(0);
+    });
+
+    it('Should prevent unauthorized users from adding expenses', async () => {
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/budgets/:budgetID/expenses/:expenseID',
+            budget: budgets[0],
+            user: { id: 20 },
+            body: { name: 'expense test', amount: 240 }
+        });
+
+        const res = createResponse();
+        const next = jest.fn();
+
+        hasAccess(req, res, next);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(401);
+        expect(data).toEqual({error: 'Invalid action'});
+
+        expect(next).not.toHaveBeenCalled();
+        
     });
 });
