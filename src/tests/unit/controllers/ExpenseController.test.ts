@@ -107,3 +107,29 @@ describe('Update expense by ID', () => {
         expect(expenseMock.update).toHaveBeenCalledWith(req.body);
     });
 });
+
+describe('Delete expense by ID', () => {
+    it('Should delete expense and return success message', async () => {
+        const expenseMock = {
+            ...expenses[0],
+            destroy: jest.fn().mockResolvedValue(true)
+        };
+
+        const req = createRequest({
+            method: 'DELETE',
+            url: '/api/:budgetID/expenses/:expenseID',
+            expense: expenseMock,
+        });
+
+        const res = createResponse();
+        await ExpensesController.deleteById(req, res);
+
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(200);
+        expect(data).toEqual('Expense successfully removed');
+
+        expect(expenseMock.destroy).toHaveBeenCalled();
+        expect(expenseMock.destroy).toHaveBeenCalledTimes(1);
+    });
+});
