@@ -34,7 +34,7 @@ describe('Creating expense', () => {
         expect(Expense.create).toHaveBeenCalledWith(req.body);
     });
 
-    it('', async () => {
+    it('Should handle expense creation errors', async () => {
         const expenseMock = {
             save: jest.fn()
         };
