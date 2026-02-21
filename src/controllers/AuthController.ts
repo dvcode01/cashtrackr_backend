@@ -29,7 +29,7 @@ export class AuthController {
                 token: user.token
             });
 
-            res.json('User created successfully');
+            res.status(201).json('User created successfully');
         } catch (error) {
             res.status(500).json({error: 'There was a mistake'});
         }
