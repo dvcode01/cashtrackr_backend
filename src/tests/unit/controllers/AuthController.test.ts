@@ -71,3 +71,23 @@ describe('User registration', () => {
     });
 
 });
+
+describe('User login', () => {
+    it('Should return 404 if user is not found', async () => {
+        (User.findOne as jest.Mock).mockResolvedValue(null);
+        
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/auth/login',
+            body: {email: 'test@test.com', password: '3421568970'}
+        });
+
+        const res = createResponse();
+
+        await AuthController.login(req, res);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(404);
+        expect(data).toHaveProperty('error', 'User not found');
+    });
+});
