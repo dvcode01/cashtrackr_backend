@@ -1,7 +1,7 @@
 import { createRequest, createResponse } from 'node-mocks-http';
 import User from '../../../models/User';
 import { AuthController } from '../../../controllers/AuthController';
-import { hashPassword } from '../../../utils/auth';
+import { hashPassword, checkPassword } from '../../../utils/auth';
 import { generateToken } from '../../../utils/token';
 import { AuthEmail } from '../../../emails/AuthEmail';
 
@@ -112,5 +112,35 @@ describe('User login', () => {
 
         expect(res.statusCode).toBe(403);
         expect(data).toHaveProperty('error', 'User not confirmed');
+    });
+
+    it('Should return 401 if the password is incorrect', async() => {
+        const userMock = {
+            id: 2,
+            email: 'test@test',
+            password: 'password',
+            confirmed: true
+        };
+        
+        (User.findOne as jest.Mock).mockResolvedValue(userMock);
+        
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/auth/login',
+            body: {email: 'test@test.com', password: '3421568970'}
+        });
+
+        const res = createResponse();
+        (checkPassword as jest.Mock).mockResolvedValue(false);
+
+        await AuthController.login(req, res);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(401);
+        expect(data).toHaveProperty('error', 'Incorrect password');
+
+        expect(checkPassword).toHaveBeenCalled();
+        expect(checkPassword).toHaveBeenCalledTimes(1);
+        expect(checkPassword).toHaveBeenCalledWith(req.body.password, userMock.password);
     });
 });
