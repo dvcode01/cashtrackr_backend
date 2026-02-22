@@ -90,4 +90,27 @@ describe('User login', () => {
         expect(res.statusCode).toBe(404);
         expect(data).toHaveProperty('error', 'User not found');
     });
+
+    it('Should return 403 if the account has not been confirmed', async () => {
+        (User.findOne as jest.Mock).mockResolvedValue({
+            id: 2,
+            email: 'test@test',
+            password: 'password',
+            confirmed: false
+        });
+        
+        const req = createRequest({
+            method: 'POST',
+            url: '/api/auth/login',
+            body: {email: 'test@test.com', password: '3421568970'}
+        });
+
+        const res = createResponse();
+
+        await AuthController.login(req, res);
+        const data = res._getJSONData();
+
+        expect(res.statusCode).toBe(403);
+        expect(data).toHaveProperty('error', 'User not confirmed');
+    });
 });
