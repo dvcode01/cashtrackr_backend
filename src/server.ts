@@ -6,13 +6,13 @@ import { db } from './config/db';
 import budgetRouter from './routes/budgetRouter';
 import authRouter from './routes/authRouter';
 
-async function connectDB(){
+export async function connectDB(){
     try {
         await db.authenticate();
         db.sync();
-        console.log(colors.blue.bold('Connection has been established successfully.'));
+        //console.log(colors.blue.bold('Connection has been established successfully.'));
     } catch (error) {
-        console.log(colors.red.bold('Unable to connect to the database'));
+        //console.log(colors.red.bold('Unable to connect to the database'));
     }
 }
 
