@@ -68,4 +68,19 @@ describe('Authentication - Create Account', () => {
         expect(response.body.errors[0].msg).toBe('The password is very short, it must have minimum of 8 characters');
     });
 
+    it('Should return 201', async () => {
+        const user = {
+            email: 'alex@correo.com',
+            name: 'Alex',
+            password: '234567890'
+        };
+        
+        const response = await request(server)
+                                    .post('/api/auth/create-account')
+                                    .send(user);
+
+        expect(response.status).toBe(201);
+        expect(response.status).not.toBe(400);
+        expect(response.body).not.toHaveProperty('errors');
+    });
 });
