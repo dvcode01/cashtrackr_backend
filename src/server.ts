@@ -17,7 +17,10 @@ export async function connectDB(){
 }
 
 const app = express();
-connectDB();
+
+if(process.env.NODE_ENV !== 'test'){
+    connectDB();
+}
 
 app.use(morgan('dev'));
 app.use(express.json());
