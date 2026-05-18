@@ -17,7 +17,6 @@ export async function connectDB(){
 }
 
 const app = express();
-
 if(process.env.NODE_ENV !== 'test'){
     connectDB();
 }
