@@ -1,5 +1,6 @@
 import request from 'supertest';
 import server from '../../server';
+import {describe, expect, it, jest} from '@jest/globals';
 import { AuthController } from '../../controllers/AuthController';
 
 describe('Authentication - Create Account', () => {
