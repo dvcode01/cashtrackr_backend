@@ -1,4 +1,5 @@
 import { createRequest, createResponse } from 'node-mocks-http';
+import {describe, expect, it, jest} from '@jest/globals';
 import User from '../../../models/User';
 import { AuthController } from '../../../controllers/AuthController';
 import { hashPassword, checkPassword } from '../../../utils/auth';
