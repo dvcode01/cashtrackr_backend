@@ -122,4 +122,17 @@ describe('Authentication -  Account confirmation with token', () => {
         expect(response.body.errors).toHaveLength(1);
         expect(response.body.errors[0].msg).toBe('Invalid token');
     });
+
+    it('Should display error if token is invalid', async() => {
+        const token = { token: '123456' };
+
+        const response = await request(server)
+                            .post('/api/auth/confirm-account')
+                            .send(token)
+
+        expect(response.status).toBe(409);
+        expect(response.body).toHaveProperty('error');
+
+        expect(response.body.error).toBe('Invalid token');
+    });
 })
