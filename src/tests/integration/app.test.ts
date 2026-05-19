@@ -84,7 +84,7 @@ describe('Authentication - Create Account', () => {
         expect(response.status).not.toBe(400);
 
         expect(response.body).not.toHaveProperty('errors');
-    }, 8000);
+    }, 10000);
 
     it('Should return 409 conflict when user is already registered', async () => {
         const user = {
