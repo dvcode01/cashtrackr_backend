@@ -84,4 +84,25 @@ describe('Authentication - Create Account', () => {
 
         expect(response.body).not.toHaveProperty('errors');
     }, 10000);
+
+    it('Should return 409 conflict when user is already registered', async () => {
+        const user = {
+            name: 'test9',
+            email: 'test9@correo.com',
+            password: 'password9'
+        };
+        
+        const response = await request(server)
+                                    .post('/api/auth/create-account')
+                                    .send(user);
+
+        expect(response.status).toBe(409);
+        expect(response.status).not.toBe(201);
+        expect(response.status).not.toBe(400);
+
+        expect(response.body).toHaveProperty('error');
+        expect(response.body.error).toBe('There is already a user associated with that email address');
+
+        expect(response.body).not.toHaveProperty('errors');
+    });
 });
