@@ -135,4 +135,17 @@ describe('Authentication -  Account confirmation with token', () => {
 
         expect(response.body.error).toBe('Invalid token');
     });
+
+    it('Should confirm account with a valid token', async() => {
+        const token = globalThis.cashtrackrConfirmationAccount;
+
+        const response = await request(server)
+                            .post('/api/auth/confirm-account')
+                            .send({token})
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual('Account successfully confirmed');
+
+        expect(response.status).not.toBe(401);
+    });
 })
