@@ -149,3 +149,21 @@ describe('Authentication -  Account confirmation with token', () => {
         expect(response.status).not.toBe(401);
     });
 })
+
+describe('Authentication - Login', () => {
+    it('Should display validation errors when the form is empty', async () => {
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send({});
+
+
+        const login = jest.spyOn(AuthController, 'login');
+
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('errors');
+
+        expect(response.body.errors).toHaveLength(2);
+        expect(response.body.errors).not.toHaveLength(1);
+        expect(login).not.toHaveBeenCalled();
+    });
+});
