@@ -189,4 +189,21 @@ describe('Authentication - Login', () => {
         expect(response.body.errors[0].msg).toBe('Invalid email');
         expect(login).not.toHaveBeenCalled();
     });
+
+    it('Should return 404 if user not found', async () => {
+        const form = {
+            email: 'user@test.com',
+            password: '123456789'
+        };
+
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send(form);
+
+        expect(response.status).toBe(404);
+        expect(response.body).toHaveProperty('error');
+
+        expect(response.status).not.toBe(200);
+        expect(response.body.error).toBe('User not found');
+    });
 });
