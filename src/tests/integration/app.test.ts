@@ -166,4 +166,27 @@ describe('Authentication - Login', () => {
         expect(response.body.errors).not.toHaveLength(1);
         expect(login).not.toHaveBeenCalled();
     });
+
+    it('Should return 400 bad request when the email is invalid', async () => {
+        const form = {
+            email: 'in_valid',
+            password: '123456789'
+        };
+
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send(form);
+
+
+        const login = jest.spyOn(AuthController, 'login');
+
+        expect(response.status).toBe(400);
+        expect(response.body).toHaveProperty('errors');
+
+        expect(response.body.errors).toHaveLength(1);
+        expect(response.body.errors).not.toHaveLength(2);
+
+        expect(response.body.errors[0].msg).toBe('Invalid email');
+        expect(login).not.toHaveBeenCalled();
+    });
 });
