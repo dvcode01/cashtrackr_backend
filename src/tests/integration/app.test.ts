@@ -1,8 +1,9 @@
 import request from 'supertest';
 import server from '../../server';
-import {describe, expect, it, jest} from '@jest/globals';
+import {beforeEach, describe, expect, it, jest} from '@jest/globals';
 import { AuthController } from '../../controllers/AuthController';
 import User from '../../models/User';
+import * as authUtils from '../../utils/auth';
 
 describe('Authentication - Create Account', () => {
     it('Should display validation errors when form is empty', async () => {
@@ -152,6 +153,10 @@ describe('Authentication -  Account confirmation with token', () => {
 })
 
 describe('Authentication - Login', () => {
+    beforeEach(() => {
+        jest.clearAllMocks()
+    });
+
     it('Should display validation errors when the form is empty', async () => {
         const response = await request(server)
                                     .post('/api/auth/login')
@@ -231,5 +236,36 @@ describe('Authentication - Login', () => {
         expect(response.status).not.toBe(200);
         expect(response.status).not.toBe(404);
         expect(response.body.error).toBe('User not confirmed');
+    });
+
+    it('Should return 401 if the password is incorrect', async () => {
+        
+        const findOne = (jest.spyOn(User, 'findOne') as jest.Mock)
+            .mockResolvedValue({
+                id: 1,
+                confirmed: true,
+                password: 'hashedpassword'
+            });
+
+        const checkPassword = (jest.spyOn(authUtils, 'checkPassword') as jest.Mock).mockResolvedValue(false);
+
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send({
+                                        "password": 'password',
+                                        "email": 'test@test.com'
+                                    });
+
+        expect(response.status).toBe(401);
+        expect(response.body).toHaveProperty('error');
+
+        expect(response.status).not.toBe(200);
+        expect(response.status).not.toBe(404);
+
+        expect(response.status).not.toBe(403);
+        expect(response.body.error).toBe('Incorrect password');
+
+        expect(findOne).toHaveBeenCalledTimes(1);
+        expect(checkPassword).toHaveBeenCalledTimes(1);
     });
 });
