@@ -2,6 +2,7 @@ import request from 'supertest';
 import server from '../../server';
 import {describe, expect, it, jest} from '@jest/globals';
 import { AuthController } from '../../controllers/AuthController';
+import User from '../../models/User';
 
 describe('Authentication - Create Account', () => {
     it('Should display validation errors when form is empty', async () => {
@@ -205,5 +206,30 @@ describe('Authentication - Login', () => {
 
         expect(response.status).not.toBe(200);
         expect(response.body.error).toBe('User not found');
+    });
+
+    it('Should return 403 if user account is not confirmed', async () => {
+        
+        (jest.spyOn(User, 'findOne') as jest.Mock)
+            .mockResolvedValue({
+                id: 1,
+                confirmed: false,
+                password: 'hashedpassword',
+                email: 'user_not_found@test.com'
+            })
+
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send({
+                                        "password": 'password',
+                                        "email": 'user_not_found@test.com'
+                                    });
+
+        expect(response.status).toBe(403);
+        expect(response.body).toHaveProperty('error');
+
+        expect(response.status).not.toBe(200);
+        expect(response.status).not.toBe(404);
+        expect(response.body.error).toBe('User not confirmed');
     });
 });
