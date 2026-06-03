@@ -4,6 +4,7 @@ import {beforeEach, describe, expect, it, jest} from '@jest/globals';
 import { AuthController } from '../../controllers/AuthController';
 import User from '../../models/User';
 import * as authUtils from '../../utils/auth';
+import * as jwtUtils from '../../utils/jwt';
 
 describe('Authentication - Create Account', () => {
     it('Should display validation errors when form is empty', async () => {
@@ -267,5 +268,39 @@ describe('Authentication - Login', () => {
 
         expect(findOne).toHaveBeenCalledTimes(1);
         expect(checkPassword).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should return 401 if the password is incorrect', async () => {
+        
+        const findOne = (jest.spyOn(User, 'findOne') as jest.Mock)
+            .mockResolvedValue({
+                id: 1,
+                confirmed: true,
+                password: 'hashedpassword'
+            });
+
+        const checkPassword = (jest.spyOn(authUtils, 'checkPassword') as jest.Mock).mockResolvedValue(true);
+        const generateJWT = (jest.spyOn(jwtUtils, 'generateJWT') as jest.Mock).mockReturnValue('jwt_token');
+
+        const response = await request(server)
+                                    .post('/api/auth/login')
+                                    .send({
+                                        "password": 'password',
+                                        "email": 'test@test.com'
+                                    });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual('jwt_token');
+
+        expect(findOne).toHaveBeenCalled();
+        expect(findOne).toHaveBeenCalledTimes(1);
+
+        expect(checkPassword).toHaveBeenCalled();
+        expect(checkPassword).toHaveBeenCalledTimes(1);
+        expect(checkPassword).toHaveBeenCalledWith('password', 'hashedpassword');
+
+        expect(generateJWT).toHaveBeenCalled();
+        expect(generateJWT).toHaveBeenCalledTimes(1);
+        expect(generateJWT).toHaveBeenCalledWith(1);
     });
 });
