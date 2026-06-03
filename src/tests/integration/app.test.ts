@@ -304,3 +304,13 @@ describe('Authentication - Login', () => {
         expect(generateJWT).toHaveBeenCalledWith(1);
     });
 });
+
+describe('GET /api/budgets', () => {
+    it('Should return reject unauthenticated access budget without a jwt', async () => {
+        const response = await request(server)
+                                .get('/api/budgets');
+
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe('Unauthorized');
+    });
+});
