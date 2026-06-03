@@ -332,6 +332,15 @@ describe('GET /api/budgets', () => {
         expect(response.body.error).toBe('Unauthorized');
     });
 
+    it('Should return reject unauthenticated access budget without a valid jwt', async () => {
+        const response = await request(server)
+                                .get('/api/budgets')
+                                .auth('in_valid', {type: 'bearer'});
+
+        expect(response.status).toBe(500);
+        expect(response.body.error).toBe('There was a mistake in token');
+    });
+
     it('Should allow authenticated access to budgets with a valid jwt', async () => {
         const response = await request(server)
                                 .get('/api/budgets')
