@@ -1,6 +1,6 @@
 import request from 'supertest';
 import server from '../../server';
-import {beforeEach, describe, expect, it, jest} from '@jest/globals';
+import {beforeAll, beforeEach, describe, expect, it, jest} from '@jest/globals';
 import { AuthController } from '../../controllers/AuthController';
 import User from '../../models/User';
 import * as authUtils from '../../utils/auth';
@@ -306,11 +306,39 @@ describe('Authentication - Login', () => {
 });
 
 describe('GET /api/budgets', () => {
+    let jwt: string;
+
+    beforeAll(() => {
+        jest.restoreAllMocks();
+    });
+
+    beforeAll(async () => {
+        const response = await request(server)
+                                .post('/api/auth/login')
+                                .send({
+                                    "email": 'test9@correo.com',
+                                    "password": 'password9'
+                                });
+            
+        jwt = response.body;
+        expect(response.status).toBe(200);
+    });
+
     it('Should return reject unauthenticated access budget without a jwt', async () => {
         const response = await request(server)
                                 .get('/api/budgets');
 
         expect(response.status).toBe(401);
         expect(response.body.error).toBe('Unauthorized');
+    });
+
+    it('Should allow authenticated access to budgets with a valid jwt', async () => {
+        const response = await request(server)
+                                .get('/api/budgets')
+                                .auth(jwt, {type: 'bearer'});
+
+        expect(response.status).not.toBe(401);
+        expect(response.body).toHaveLength(0);
+        expect(response.body.error).not.toBe('Unauthorized');
     });
 });
