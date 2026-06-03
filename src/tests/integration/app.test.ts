@@ -270,7 +270,7 @@ describe('Authentication - Login', () => {
         expect(checkPassword).toHaveBeenCalledTimes(1);
     });
 
-    it('Should return 401 if the password is incorrect', async () => {
+    it('Should return 200 if the login is successful', async () => {
         
         const findOne = (jest.spyOn(User, 'findOne') as jest.Mock)
             .mockResolvedValue({
