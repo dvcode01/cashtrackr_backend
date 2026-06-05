@@ -380,7 +380,6 @@ describe('POST /api/budgets', () => {
     });
 });
 
-
 describe('GET /api/budgets/:id', () => {
     beforeAll(async () => {
         await authenticateUser();
@@ -404,8 +403,20 @@ describe('GET /api/budgets/:id', () => {
 
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors).toBeTruthy();
-        
+
         expect(response.body.errors).toHaveLength(1);
         expect(response.body.errors[0].msg).toBe('Invalid ID');
+    });
+
+    it('Should return 404 error when a budget doesnt exist', async () => {
+        const response = await request(server)
+                                .get('/api/budgets/300')
+                                .auth(jwt, {type: 'bearer'});
+
+        expect(response.status).toBe(404);
+        expect(response.status).not.toBe(400);
+        
+        expect(response.status).not.toBe(401);
+        expect(response.body.error).toBe('Budget not found');
     });
 });
