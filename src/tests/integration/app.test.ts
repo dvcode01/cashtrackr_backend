@@ -431,4 +431,16 @@ describe('GET /api/budgets/:id', () => {
         expect(response.status).not.toBe(401);
         expect(response.body.error).toBe('Budget not found');
     });
+
+    it('Should return a single budget by id', async () => {
+        const response = await request(server)
+                                .get('/api/budgets/1')
+                                .auth(jwt, {type: 'bearer'});
+
+        expect(response.status).toBe(200);
+        expect(response.status).not.toBe(400);
+
+        expect(response.status).not.toBe(404);
+        expect(response.status).not.toBe(401);
+    });
 });
