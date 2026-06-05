@@ -361,6 +361,14 @@ describe('POST /api/budgets', () => {
         await authenticateUser();
     });
 
+    it('Should reject unauthenticated post request to budgets without a jwt', async () => {
+        const response = await request(server)
+                                .post('/api/budgets');
+
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe('Unauthorized');
+    });    
+
     it('Should display validation when the form is submitted with invalid data', async () => {
         const response = await request(server)
                                 .post('/api/budgets')
@@ -369,6 +377,21 @@ describe('POST /api/budgets', () => {
 
         expect(response.status).toBe(400);
         expect(response.body.errors).toHaveLength(4);
+    });
+});
+
+
+describe('GET /api/budgets/:id', () => {
+    beforeAll(async () => {
+        await authenticateUser();
+    });
+
+    it('Should reject unauthenticated get request to budget id without a jwt', async () => {
+        const response = await request(server)
+                                .get('/api/budgets/1');
+
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe('Unauthorized');
     });
 
 
