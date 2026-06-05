@@ -378,6 +378,18 @@ describe('POST /api/budgets', () => {
         expect(response.status).toBe(400);
         expect(response.body.errors).toHaveLength(4);
     });
+
+    it('Should create a budget if the user is authenticate with a 200 code sucess', async () => {
+        const response = await request(server)
+                                .post('/api/budgets')
+                                .auth(jwt, {type: 'bearer'})
+                                .send({
+                                    name: "Gastos",
+                                    amount: 3000
+                                });
+                                        
+        expect(response.status).toBe(201);
+    })
 });
 
 describe('GET /api/budgets/:id', () => {
