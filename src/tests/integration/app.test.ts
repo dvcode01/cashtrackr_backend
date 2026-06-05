@@ -355,3 +355,21 @@ describe('GET /api/budgets', () => {
         expect(response.body.error).not.toBe('Unauthorized');
     });
 });
+
+describe('POST /api/budgets', () => {
+    beforeAll(async () => {
+        await authenticateUser();
+    });
+
+    it('Should display validation when the form is submitted with invalid data', async () => {
+        const response = await request(server)
+                                .post('/api/budgets')
+                                .auth(jwt, {type: 'bearer'})
+                                .send({});
+
+        expect(response.status).toBe(400);
+        expect(response.body.errors).toHaveLength(4);
+    });
+
+
+});
