@@ -394,5 +394,18 @@ describe('GET /api/budgets/:id', () => {
         expect(response.body.error).toBe('Unauthorized');
     });
 
+    it('Should return 400 error bad request when id is not valid', async () => {
+        const response = await request(server)
+                                .get('/api/budgets/in_valid')
+                                .auth(jwt, {type: 'bearer'});
 
+        expect(response.status).toBe(400);
+        expect(response.status).not.toBe(401);
+
+        expect(response.body.errors).toBeDefined();
+        expect(response.body.errors).toBeTruthy();
+        
+        expect(response.body.errors).toHaveLength(1);
+        expect(response.body.errors[0].msg).toBe('Invalid ID');
+    });
 });
