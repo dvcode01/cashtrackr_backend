@@ -30,7 +30,7 @@ export class AuthEmail {
             html: `
                 <p>Hola ${user.name}! has solicitado reestablecer tu password, sigue las siguientes instrucciones</p>
                 <p>Visita el siguiente enlace:</p>
-                <a href="#">Reestablecer Cuenta</a>
+                <a href="${process.env.FRONTEND_URL}/auth/new-password">Reestablecer Cuenta</a>
 
                  <p>e ingrese el siguiente código: <b>${user.token}</b></p>
             `
