@@ -137,17 +137,26 @@ export class AuthController {
     };
 
     public static updateUser = async (req: Request, res: Response) => {
-        // recibir los datos de la peticion
+        const { name, email } = req.body;
         
+        try {
+            // Comprobar que correo existe
+            const existingUser = await User.findOne({ where: {email} });
+            
+            if(existingUser && existingUser.id !== req.user.id){
+                const error = new Error('That email address is already registered by another user');
+                return res.status(409).json({error: error.message});
+            }
+    
+            await User.update({email, name}, {
+                where: { id: req.user.id}
+            });
 
-        // Comprobar que correo existe
-        
+            res.json('Profile successfully updated')
+        } catch (error) {
+            res.status(500).json({error: 'There was a mistake'});
+        }
 
-        // modifico la informacion del usuario
-
-        // envio y guardo los cambios
-        console.log('desde update user');
-        console.log(req.body);
     };
 
     public static updateCurrentPassword = async (req: Request, res: Response) => {
