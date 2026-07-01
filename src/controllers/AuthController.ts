@@ -136,6 +136,20 @@ export class AuthController {
         res.json(req.user);
     };
 
+    public static updateUser = async (req: Request, res: Response) => {
+        // recibir los datos de la peticion
+        
+
+        // Comprobar que correo existe
+        
+
+        // modifico la informacion del usuario
+
+        // envio y guardo los cambios
+        console.log('desde update user');
+        console.log(req.body);
+    };
+
     public static updateCurrentPassword = async (req: Request, res: Response) => {
         const { current_password, password } = req.body;
         const { id } = req.user;
